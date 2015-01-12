@@ -70,13 +70,13 @@ import com.sun.jersey.spi.container.servlet.ServletContainer;
 
 /** Convenience and demo for launching programmatically. Also used for automated tests.
  * <p>
- * BrooklynLauncher has a more full-featured CLI way to start, 
+ * BrooklynLauncher has a more full-featured CLI way to start,
  * but if you want more control you can:
  * <li> take the WAR this project builds (REST API) -- NB probably want the unshaded one (containing all deps)
- * <li> take the WAR from the jsgui project _and_ this WAR and combine them 
+ * <li> take the WAR from the jsgui project _and_ this WAR and combine them
  *      (this one should run as a filter on the others, _not_ as a ResourceCollection where they fight over who's got root)
- * <li> programmatically install things, following the examples herein; 
- *      in particular {@link #installAsServletFilter(ServletContextHandler)} is quite handy! 
+ * <li> programmatically install things, following the examples herein;
+ *      in particular {@link #installAsServletFilter(ServletContextHandler)} is quite handy!
  * <p>
  * You can also just run this class. In most installs it just works, assuming your IDE or maven-fu gives you the classpath.
  * Add more apps and entities on the classpath and they'll show up in the catalog.
@@ -122,7 +122,7 @@ public class BrooklynRestApiLauncher {
     }
 
     /**
-     * Runs the server with the given set of filters. 
+     * Runs the server with the given set of filters.
      * Overrides any previously supplied set (or {@link #DEFAULT_FILTERS} which is used by default).
      */
     public BrooklynRestApiLauncher filters(Class<? extends Filter>... filters) {
@@ -407,5 +407,5 @@ public class BrooklynRestApiLauncher {
         }
         return dir.getAbsolutePath();
     }
-    
+
 }
