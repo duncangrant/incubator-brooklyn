@@ -1223,6 +1223,26 @@
                 </excludes>
               </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.pitest</groupId>
+                <artifactId>pitest-maven</artifactId>
+                <version>1.1.3</version>
+                <configuration>
+                    <targetClasses>
+                        <param>brooklyn.*</param>
+                    </targetClasses>
+                    <targetTests>
+                        <param>brooklyn.*</param>
+                    </targetTests>
+                    <excludedGroups>
+                        <excludedGroup>Integration</excludedGroup>
+                        <excludedGroup>Acceptance</excludedGroup>
+                        <excludedGroup>Live</excludedGroup>
+                        <excludedGroup>WIP</excludedGroup>
+                    </excludedGroups>
+                    <verbose>true</verbose>
+                </configuration>
+            </plugin>
         </plugins>
         <extensions>
             <extension>
@@ -1649,6 +1669,26 @@
                                 </goals>
                             </execution>
                         </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>Mutate</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.pitest</groupId>
+                        <artifactId>pitest-maven</artifactId>
+                        <version>LATEST</version>
+                        <configuration>
+                            <targetClasses>
+                                <param>com.your.package.root.want.to.mutate*</param>
+                            </targetClasses>
+                            <targetTests>
+                                <param>com.your.package.root*</param>
+                            </targetTests>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
