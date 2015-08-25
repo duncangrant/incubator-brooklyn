@@ -18,36 +18,53 @@
  */
 package org.apache.brooklyn.enricher;
 
-
+import org.apache.brooklyn.api.entity.Entity;
+import org.apache.brooklyn.core.effector.EffectorTasks;
+import org.apache.brooklyn.util.core.task.DynamicTasks;
+import org.apache.brooklyn.util.core.task.ssh.SshTasks;
+import org.apache.brooklyn.util.core.task.system.ProcessTaskFactory;
 import org.apache.brooklyn.util.ssh.BashCommands;
 
 public class LogstashShared {
+
+    private Entity entity;
+
+    public LogstashShared(Entity entity) {
+        this.entity = entity;
+    }
 
     public void stop() {
 
     }
 
-    public String install(String downloadLocation) {
+    public boolean install(String downloadLocation) {
         String installJava = BashCommands.alternatives(
                 BashCommands.installJava8(),
                 BashCommands.installJava7());
 
-        return BashCommands.chainGroup(
+        String command = BashCommands.chainGroup(
                 installJava,
                 BashCommands.INSTALL_WGET,
                 "wget --quiet -O - " + downloadLocation + " | tar zxv ");
 
-
+        return execCommandOnMachine("Install logstash agent", command);
     }
 
-    public String customize(String customize, String configLoc) {
-        return
-                "echo \"" + customize + "\" > " + configLoc;
+    public boolean customize(String customize, String configLoc) {
+        String command = "echo \"" + customize + "\" > " + configLoc;
+
+        return execCommandOnMachine("Customize logstash agent", command);
     }
 
-    public String launch(String configLoc) {
-        return
-                "nohup logstash-1.5.4/bin/logstash -f " + configLoc + " > console.out 2>&1 &"
-        ;
+    public boolean launch(String configLoc) {
+        String command = "nohup logstash-1.5.4/bin/logstash -f " + configLoc + " > console.out 2>&1 &";
+        return execCommandOnMachine("Launch logstash agent", command);
+    }
+
+    private boolean execCommandOnMachine(String description, String launchCommand) {
+        ProcessTaskFactory<Integer> taskFactory = SshTasks.newSshExecTaskFactory(EffectorTasks.getSshMachine(entity), launchCommand)
+                .summary(description)
+                .allowingNonZeroExitCode();
+        return DynamicTasks.queueIfPossible(taskFactory).orSubmitAsync(entity).getTask().getUnchecked() == 0;
     }
 }
